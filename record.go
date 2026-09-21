@@ -43,9 +43,9 @@ type Record struct {
 }
 
 // ParseRecord parses one zone-file line. It expects the caller to have
-// already filtered out blank lines, $DIRECTIVE lines, and multi-line
-// records (parenthesized SOA blocks and the like) — those need a stateful
-// reader, which this package doesn't provide yet.
+// already filtered out blank lines and $DIRECTIVE lines, and to have run
+// multi-line records (parenthesized SOA blocks and the like) through
+// JoinParenthesized first so each one arrives here as a single line.
 func ParseRecord(line string) (Record, error) {
 	raw := strings.TrimSpace(stripComment(line))
 	if raw == "" {

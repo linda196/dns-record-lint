@@ -87,11 +87,35 @@ With `--json` the same report above comes out as:
 }
 ```
 
+## Multi-line records
+
+SOA records are usually split across several lines wrapped in parens.
+`JoinParenthesized` collapses that into the single logical line
+`ParseRecord` expects:
+
+```go
+lines := []string{
+	"@ IN SOA ns1.example.com. hostmaster.example.com. (",
+	"    2024010100 ; serial",
+	"    3600       ; refresh",
+	"    900        ; retry",
+	"    604800     ; expire",
+	"    86400 )    ; minimum",
+}
+
+joined, err := dnslint.JoinParenthesized(lines)
+if err != nil {
+	panic(err)
+}
+rec, err := dnslint.ParseRecord(joined[0])
+```
+
 ## Status
 
 Early. `ParseRecord` handles single-line records for the common types (A,
-AAAA, CNAME, MX, NS, TXT, PTR, SRV, CAA) but not multi-line SOA blocks or
-zone file directives like `$ORIGIN` and `$TTL` yet — see the roadmap below.
+AAAA, CNAME, MX, NS, TXT, PTR, SRV, CAA), and `JoinParenthesized` handles
+multi-line rdata, but zone file directives like `$ORIGIN` and `$TTL` aren't
+parsed yet — see the roadmap below.
 
 ## License
 
